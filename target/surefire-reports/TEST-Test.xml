@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="Test" time="0.005" tests="0" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="17"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="D:\burpSuite插件开发\CloudExt\BucketVulTools\target\test-classes;D:\burpSuite插件开发\CloudExt\BucketVulTools\target\classes;C:\Users\Administrator\.m2\repository\net\portswigger\burp\extensions\montoya-api\2023.3\montoya-api-2023.3.jar;"/>
+    <property name="java.vm.vendor" value="Amazon.com Inc."/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="user.variant" value=""/>
+    <property name="java.vendor.url" value="https://aws.amazon.com/corretto/"/>
+    <property name="user.timezone" value="Asia/Hong_Kong"/>
+    <property name="os.name" value="Windows 11"/>
+    <property name="java.vm.specification.version" value="17"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="CN"/>
+    <property name="sun.boot.library.path" value="C:\Users\Administrator\.jdks\corretto-17.0.10\bin"/>
+    <property name="sun.java.command" value="C:\Users\Administrator\AppData\Local\Temp\surefire4723355292164239364\surefirebooter-20241021112303068_3.jar C:\Users\Administrator\AppData\Local\Temp\surefire4723355292164239364 2024-10-21T11-23-01_542-jvmRun1 surefire-20241021112303068_1tmp surefire_0-20241021112303068_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="D:\burpSuite插件开发\CloudExt\BucketVulTools\target\test-classes;D:\burpSuite插件开发\CloudExt\BucketVulTools\target\classes;C:\Users\Administrator\.m2\repository\net\portswigger\burp\extensions\montoya-api\2023.3\montoya-api-2023.3.jar;"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="C:\Users\Administrator"/>
+    <property name="user.language" value="zh"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2024-01-16"/>
+    <property name="java.home" value="C:\Users\Administrator\.jdks\corretto-17.0.10"/>
+    <property name="file.separator" value="\"/>
+    <property name="basedir" value="D:\burpSuite插件开发\CloudExt\BucketVulTools"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="surefire.real.class.path" value="C:\Users\Administrator\AppData\Local\Temp\surefire4723355292164239364\surefirebooter-20241021112303068_3.jar"/>
+    <property name="user.script" value=""/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="17.0.10+7-LTS"/>
+    <property name="user.name" value="Administrator"/>
+    <property name="path.separator" value=";"/>
+    <property name="os.version" value="10.0"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="Corretto-17.0.10.7.1"/>
+    <property name="localRepository" value="C:\Users\Administrator\.m2\repository"/>
+    <property name="java.vendor.url.bug" value="https://github.com/corretto/corretto-17/issues/"/>
+    <property name="java.io.tmpdir" value="C:\Users\ADMINI~1\AppData\Local\Temp\"/>
+    <property name="idea.version" value="2024.3"/>
+    <property name="java.version" value="17.0.10"/>
+    <property name="user.dir" value="D:\burpSuite插件开发\CloudExt\BucketVulTools"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="C:\Users\Administrator\.jdks\corretto-17.0.10\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;D:\Oculus\Support\oculus-runtime;D:\dev\flutter\bin;D:\VMware Workstation Pro\bin\;C:\Windows\System32;D:\dev\maven\apache-maven-3.8.6\bin;D:\nodeJs;C:\Program Files (x86)\WiX Toolset v3.11\bin;C:\Program Files (x86)\Inno Setup 6;C:\Windows\System32\wbem;d:\Program Files\Git\cmd;C:\Program Files\Amazon\AWSCLIV2\;D:\tools\cf_v0.4.4_windows_amd64;C:\Program Files\dotnet\;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;D:\phpstudy_pro\Extensions\php\php7.3.4nts;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\MinGW\bin;D:\javajdk\jdk18351\bin;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;D:\tmp\;C:\Windows\System32\OpenSSH\;C:\Users\Administrator\.jdks\corretto-1.8.0_392\bin;D:\upx-4.2.1-win64;C:\Program Files\NVIDIA Corporation\Nsight Compute 2023.2.1\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\Go\bin;D:\Windows Kits\10\Windows Performance Toolkit\;D:\Program Files\mingw64\bin;D:\dev\nodejs\;C:\ProgramData\chocolatey\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Users\Administrator\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\Administrator\AppData\Local\Programs\Python\Python310\;C:\Users\Administrator\.cargo\bin;C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps;D:\PyCharm 2021.3.2\bin;%IntelliJ IDEA%;D:\PhpStorm 2021.3\bin;G:\Microsoft VS Code\bin;D:\Microsoft VS Code\bin;d:\Program Files\JetBrains\WebStorm 2022.2.2\bin;d:\Program Files\JetBrains\GoLand 2022.3\bin;C:\Users\Administrator\.dotnet\tools;C:\Users\Administrator\go\bin;D:\Program Files\JetBrains\JetBrains Rider 2023.2.2\bin;C:\Program Files\JetBrains\WebStorm 2023.2.3\bin;C:\Users\Administrator\AppData\Local\JetBrains\Toolbox\scripts;C:\Users\Administrator\AppData\Local\Programs\oh-my-posh\bin;C:\Program Files\MoreSec\DotNetFrameworkSastTool;C:\Program Files\MoreSec\DotNetCoreSastTool;C:\Users\Administrator\go\bin;C:\Users\Administrator\AppData\Roaming\npm;C:\Users\Administrator\.dotnet\tools;C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps;C:\Users\Administrator\AppData\Local\Pandoc\;."/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.vendor" value="Amazon.com Inc."/>
+    <property name="java.vm.version" value="17.0.10+7-LTS"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="61.0"/>
+  </properties>
+</testsuite>
