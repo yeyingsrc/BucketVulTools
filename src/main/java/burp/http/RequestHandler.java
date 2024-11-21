@@ -43,8 +43,8 @@ public class RequestHandler {
         String host = baseRequestResponse.request().httpService().host();
         String[] split = host.split("\\.");
         String currentDomain = split[split.length - 2] + "." + split[split.length - 1];
-//        List<AuditIssue> auditIssues = new ArrayList<>();
-        List<AuditIssue> auditIssues = new CheckAKSK(baseRequestResponse).checkVul();
+        List<AuditIssue> auditIssues = new ArrayList<>();
+//        List<AuditIssue> auditIssues = new CheckAKSK(baseRequestResponse).checkVul();
         //根据server头判断
         Type typeByServer = getTypeByServer(baseRequestResponse);
         if (typeByServer == AliYun){
