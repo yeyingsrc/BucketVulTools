@@ -9,7 +9,13 @@ import burp.api.montoya.scanner.ScanCheck;
 import burp.api.montoya.scanner.audit.insertionpoint.AuditInsertionPoint;
 import burp.api.montoya.scanner.audit.issues.AuditIssue;
 import burp.http.RequestHandler;
+import burp.ui.UI;
 
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 public class IScanCheck implements ScanCheck {
@@ -26,14 +32,12 @@ public class IScanCheck implements ScanCheck {
      */
     @Override
     public AuditResult activeAudit(HttpRequestResponse baseRequestResponse, AuditInsertionPoint auditInsertionPoint) {
-        RequestHandler instance = RequestHandler.getInstance(Main.api);
-        List<AuditIssue> auditIssues = instance.handlerRequest(baseRequestResponse);
-        Main.api.logging().logToOutput("start scanner" + baseRequestResponse.url());
-        return AuditResult.auditResult(auditIssues);
+        return AuditResult.auditResult(new ArrayList<>());
     }
 
     @Override
     public AuditResult passiveAudit(HttpRequestResponse baseRequestResponse) {
+        Main.getExtUIPanel();
         RequestHandler instance = RequestHandler.getInstance(Main.api);
         List<AuditIssue> auditIssues = instance.handlerRequest(baseRequestResponse);
         return AuditResult.auditResult(auditIssues);

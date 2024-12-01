@@ -1,9 +1,10 @@
 package burp.http;
 
+import burp.Main;
 import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.scanner.audit.issues.AuditIssue;
-import burp.vendor.CheckAKSK;
+import burp.ui.UI;
 import burp.vendor.Type;
 import burp.vendor.aliyun.OSS;
 import burp.vendor.huawei.OBS;
@@ -39,6 +40,7 @@ public class RequestHandler {
 
 
     public List<AuditIssue> handlerRequest(HttpRequestResponse baseRequestResponse){
+
         // 截取host判断厂商类型
         String host = baseRequestResponse.request().httpService().host();
         String[] split = host.split("\\.");
@@ -48,32 +50,32 @@ public class RequestHandler {
         //根据server头判断
         Type typeByServer = getTypeByServer(baseRequestResponse);
         if (typeByServer == AliYun){
-            auditIssues.addAll(new COS(baseRequestResponse).checkVul());
+            UI.updateUIData(new OSS(baseRequestResponse).checkVul());
         }
         else if (typeByServer == Tencent){
-            auditIssues.addAll(new OSS(baseRequestResponse).checkVul());
+            UI.updateUIData(new COS(baseRequestResponse).checkVul());
         }
         else if (typeByServer == HauWeiCloud){
-            auditIssues.addAll(new OBS(baseRequestResponse).checkVul());
+            UI.updateUIData(new OBS(baseRequestResponse).checkVul());
         }
         //如果无法通过server判断则使用域名
         else {
             if (currentDomain.equals(Tencent.getDomain())){
-                auditIssues.addAll(new COS(baseRequestResponse).checkVul());
+                UI.updateUIData(new COS(baseRequestResponse).checkVul());
             }
             if (currentDomain.equals(AliYun.getDomain())){
-                auditIssues.addAll(new OSS(baseRequestResponse).checkVul());
+                UI.updateUIData(new OSS(baseRequestResponse).checkVul());
             }
             if (currentDomain.equals(HauWeiCloud.getDomain())){
-                auditIssues.addAll(new OBS(baseRequestResponse).checkVul());
+                UI.updateUIData(new OBS(baseRequestResponse).checkVul());
             }
         }
 
         return auditIssues;
     }
 
-    public static Map parse(String url,String args) {
-        Map map = new HashMap();
+    public static Map<String,String> parse(String url,String args) {
+        Map<String,String> map = new HashMap<>();
         //1.创建DocumentBuilderFactory对象
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {

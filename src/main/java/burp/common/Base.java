@@ -6,6 +6,8 @@ import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.http.message.params.ParsedHttpParameter;
 import burp.api.montoya.http.message.requests.HttpRequest;
 import burp.api.montoya.scanner.audit.issues.AuditIssue;
+import burp.ui.ListsModule;
+
 import java.util.List;
 
 public interface Base {
@@ -14,7 +16,7 @@ public interface Base {
     static final int failedCodeRange = 400;
     //flag参数用于标记是否检测put acl权限
     HttpHeader header = HttpHeader.httpHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.75 Safari/537.36");
-    List<AuditIssue> checkVul();
+    List<ListsModule> checkVul();
     default String getService(HttpRequest httpRequest) {
         String host = httpRequest.httpService().host();
         String p = httpRequest.httpService().secure() ? "https://" : "http://";

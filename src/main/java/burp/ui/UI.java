@@ -1,22 +1,19 @@
 package burp.ui;
 
 import burp.Main;
-import burp.api.montoya.http.message.HttpRequestResponse;
-import burp.api.montoya.http.message.requests.HttpRequest;
-import burp.api.montoya.scanner.AuditResult;
-import burp.api.montoya.scanner.audit.issues.AuditIssue;
 import burp.api.montoya.ui.editor.HttpRequestEditor;
 import burp.api.montoya.ui.editor.HttpResponseEditor;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class UI {
     private static JTable currentTable;                   // 表格组件
@@ -24,20 +21,22 @@ public class UI {
     private static HttpRequestEditor requestEditor;       // HTTP 请求编辑器
     private static HttpResponseEditor httpResponseEditor; // HTTP 响应编辑器
     private static int num = 0;                           // 序号计数器
-    private static Map<String, String> regexConfigurations = new HashMap<>(); // 存储正则配置
+
+    // 用一个 Set 来存储已添加的条目，避免重复添加
+    private static Set<String> addedEntries = new HashSet<>();
 
     /**
      * 创建表格并设置列标题
      */
     private static Component createTable() {
-        // 为表格添加新的“厂商”列
-        String[] tableTitle = new String[]{"序号", "url", "匹配参数", "厂商"};
+        // 为表格添加新的列
+        String[] tableTitle = new String[]{"序号", "url", "漏洞类型", "厂商"};
 
         // 设置表格和编辑权限
         currentTable = new JTable() {
             public boolean isCellEditable(int row, int col) {
                 // 只允许第三列可编辑
-                return col == 2;
+                return col == 1;
             }
         };
         currentTable.getTableHeader().setReorderingAllowed(false);  // 禁止列拖动
@@ -46,6 +45,9 @@ public class UI {
         DefaultTableModel model = (DefaultTableModel) currentTable.getModel();
         model.setColumnIdentifiers(tableTitle); // 设置表格列标题
         currentTable.setModel(model);
+
+        // 设置表格内容居中
+        centerTableContent();
 
         // 添加鼠标点击事件
         currentTable.addMouseListener(new MouseAdapter() {
@@ -59,86 +61,48 @@ public class UI {
             }
         });
 
+        // 调整列宽
+        adjustColumnWidths();
+
         // 将表格放入滚动面板
         return new JScrollPane(currentTable);
     }
 
     /**
-     * 创建配置菜单按钮并弹出配置窗口
+     * 设置表格的内容居中
      */
-    private static void createConfigMenu(JPanel mainPane) {
-        // 创建菜单栏
-        JMenuBar menuBar = new JMenuBar();
-        JMenu configMenu = new JMenu("配置");
+    private static void centerTableContent() {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // 配置菜单按钮
-        JMenuItem configureItem = new JMenuItem("配置正则表达式");
-        configureItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // 显示配置窗口
-                showConfigWindow();
-            }
-        });
-
-        configMenu.add(configureItem);
-        menuBar.add(configMenu);
-        mainPane.add(menuBar, BorderLayout.NORTH);
+        // 设置每列的渲染器为居中
+        for (int i = 0; i < currentTable.getColumnCount(); i++) {
+            currentTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
     }
 
     /**
-     * 显示配置窗口，用于添加和查看正则表达式配置
+     * 调整表格列宽
+     * 使得每一列自适应其内容的宽度
+     * URL 列根据百分比来设置宽度
      */
-    private static void showConfigWindow() {
-        // 配置窗口
-        JFrame configFrame = new JFrame("正则配置");
-        configFrame.setSize(400, 300);
-        configFrame.setLayout(new BorderLayout());
+    private static void adjustColumnWidths() {
+        TableColumn column;
 
-        // 配置列表
-        DefaultTableModel model = new DefaultTableModel(new String[]{"名称", "正则表达式"}, 0);
-        JTable configTable = new JTable(model);
+        // 获取当前表格的总宽度
+        int tableWidth = currentTable.getPreferredSize().width;
 
-        // 填充现有配置
-        for (Map.Entry<String, String> entry : regexConfigurations.entrySet()) {
-            model.addRow(new Object[]{entry.getKey(), entry.getValue()});
+        column = currentTable.getColumnModel().getColumn(1);
+        column.setPreferredWidth((int) (tableWidth * 0.8));
+
+        int remainingWidth = tableWidth - (int) (tableWidth * 0.2);
+
+        for (int i = 0; i < currentTable.getColumnCount(); i++) {
+            if (i == 1) continue;  // 跳过 URL 列
+
+            column = currentTable.getColumnModel().getColumn(i);
+            column.setPreferredWidth(remainingWidth / (currentTable.getColumnCount() - 1));
         }
-
-        // 添加正则表达式配置输入框
-        JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new GridLayout(2, 2));
-
-        JLabel nameLabel = new JLabel("名称：");
-        JTextField nameField = new JTextField();
-        JLabel regexLabel = new JLabel("正则表达式：");
-        JTextField regexField = new JTextField();
-        inputPanel.add(nameLabel);
-        inputPanel.add(nameField);
-        inputPanel.add(regexLabel);
-        inputPanel.add(regexField);
-
-        // 添加按钮
-        JButton addButton = new JButton("添加配置");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = nameField.getText();
-                String regex = regexField.getText();
-                if (!name.isEmpty() && !regex.isEmpty()) {
-                    regexConfigurations.put(name, regex);
-                    model.addRow(new Object[]{name, regex});
-                    nameField.setText("");
-                    regexField.setText("");
-                } else {
-                    JOptionPane.showMessageDialog(configFrame, "名称和正则表达式不能为空", "错误", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-
-        configFrame.add(new JScrollPane(configTable), BorderLayout.CENTER);
-        configFrame.add(inputPanel, BorderLayout.NORTH);
-        configFrame.add(addButton, BorderLayout.SOUTH);
-        configFrame.setVisible(true);
     }
 
     /**
@@ -165,9 +129,6 @@ public class UI {
         JPanel mainPane = new JPanel(new BorderLayout());
         mainPane.add(splitPane, BorderLayout.CENTER);  // 将分隔布局放置在主面板中心
         mainPane.setVisible(true);
-
-        // 创建配置菜单
-        createConfigMenu(mainPane);
         return mainPane;
     }
 
@@ -180,18 +141,41 @@ public class UI {
 
     /**
      * 设置表格数据，包括序号、URL、匹配参数和厂商
+     * 这里添加了去重逻辑
      */
-    private static void setModeData(ListsModule listsModule, String key, String vendor) {
+    private static void setModeData(ListsModule listsModule) {
         DefaultTableModel model = (DefaultTableModel) currentTable.getModel();
-        // 向表格中添加一行数据，包括新列“厂商”
-        model.addRow(new Object[]{num++, listsModule, key, vendor});
+
+        // 生成唯一的键，用于去重
+        String uniqueKey = generateUniqueKey(listsModule);
+
+        // 如果该条目没有被添加过，则加入表格
+        if (!addedEntries.contains(uniqueKey)) {
+            model.addRow(new Object[]{num++, listsModule, listsModule.getVulType(), listsModule.getVendor()});
+            addedEntries.add(uniqueKey);  // 标记该条目为已添加
+        }
         currentTable.setModel(model);
+
+        // 重新调整列宽，确保更新后的内容自适应
+        adjustColumnWidths();
     }
 
     /**
      * 更新 UI 数据，将新数据添加到表格中
      */
-    public static void updateUIData(ListsModule listsModule, String key, String vendor) {
-        setModeData(listsModule, key, vendor);
+    public static void updateUIData(List<ListsModule> list) {
+        //更新UI颜色
+        Main.pane.setBackgroundAt(Main.tabIndex,Color.RED);
+        for (ListsModule listsModule : list) {
+            setModeData(listsModule);
+        }
+    }
+
+    /**
+     * 生成唯一的键，用于判断条目的唯一性
+     * 该键是由 vulType 和 vendor 组成的字符串
+     */
+    private static String generateUniqueKey(ListsModule listsModule) {
+        return listsModule.getVulType() + "-" + listsModule.getVendor() + "-" + listsModule.getURL();
     }
 }

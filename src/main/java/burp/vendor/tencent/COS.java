@@ -11,12 +11,13 @@ import burp.api.montoya.http.message.requests.HttpRequest;
 import burp.api.montoya.scanner.audit.issues.AuditIssue;
 import burp.api.montoya.scanner.audit.issues.AuditIssueConfidence;
 import burp.api.montoya.scanner.audit.issues.AuditIssueSeverity;
+import burp.ui.ListsModule;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class COS implements Base {
-    List<AuditIssue> auditIssueList = new ArrayList<>();
+    List<ListsModule> listsModules = new ArrayList<>();
 
     private final HttpRequest httpRequest;
 
@@ -31,24 +32,15 @@ public class COS implements Base {
                     withAddedHeader("x-cos-acl","public-read-write").
                     withAddedHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.75 Safari/537.36"));
             if (put.response().statusCode() <= successCodeRange) {
-                auditIssueList.add(AuditIssue.auditIssue("ACL is writable","ACL is writable","",put.url(), AuditIssueSeverity.HIGH,
-                        AuditIssueConfidence.FIRM,"","",AuditIssueSeverity.HIGH,put));
+                listsModules.add(new ListsModule(put,"ACL可写","腾讯云COS"));
             }
         }
         HttpRequestResponse get = Main.api.http().sendRequest(HttpRequest.httpRequestFromUrl(currentUrl).
                 withMethod("GET").
                 withAddedHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.75 Safari/537.36"));
 
-
-        boolean isAclResponse = false;
-
-        //解决某些静态网站的误报
-        for (HttpHeader httpHeader : get.response().headers()) {
-            if (httpHeader.name().equals("Content-Type") && httpHeader.value().equals("text/html"))  isAclResponse = true;
-        }
-        if (isAclResponse && get.response().body().countMatches(ByteArray.byteArray("<Permission>")) != 0){
-            auditIssueList.add(AuditIssue.auditIssue("ACL readable","ACL readable","",get.url(), AuditIssueSeverity.HIGH,
-                    AuditIssueConfidence.FIRM,"","",AuditIssueSeverity.HIGH,get));
+        if (get.response().body().countMatches(ByteArray.byteArray("<Permission>")) != 0){
+            listsModules.add(new ListsModule(get,"ACL可读","腾讯云COS"));
         }
     }
 
@@ -69,9 +61,7 @@ public class COS implements Base {
         if (httpRequestResponse.response().statusCode() <= successCodeRange){
             ByteArray body = httpRequestResponse.response().body();
             if (body.countMatches("<ListBucketResult>") != 0 && body.countMatches("<Name>") != 0){
-                auditIssueList.add(AuditIssue.auditIssue("Buckets are traversable","Buckets are traversable","",
-                        httpRequestResponse.url(), AuditIssueSeverity.HIGH,
-                        AuditIssueConfidence.FIRM,"","",AuditIssueSeverity.HIGH,httpRequestResponse));
+                listsModules.add(new ListsModule(httpRequestResponse,"存储桶可遍历","腾讯云COS"));
             }
         }
     }
@@ -87,16 +77,13 @@ public class COS implements Base {
                         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.75 Safari/537.36").withBody("test fileUpload").withMethod("PUT")
         );
         if (testFileUpload.response().statusCode() <= successCodeRange){
-            AuditIssue auditIssue = AuditIssue.auditIssue("Support put to upload files","Support put to upload files","",
-                    testFileUpload.url(), AuditIssueSeverity.HIGH,
-                    AuditIssueConfidence.FIRM,"","",AuditIssueSeverity.HIGH,testFileUpload);
-            auditIssueList.add(auditIssue);
+            listsModules.add(new ListsModule(testFileUpload,"PUT文件上传","腾讯云COS"));
         }
     }
 
 
     @Override
-    public List<AuditIssue> checkVul(){
+    public List<ListsModule> checkVul(){
         IAction[] iActions = {
                 this::checkAcl,
                 this::bucketsTraversable,
@@ -105,6 +92,6 @@ public class COS implements Base {
         for (IAction iAction : iActions) {
             iAction.execute();
         }
-        return auditIssueList;
+        return listsModules;
     }
 }

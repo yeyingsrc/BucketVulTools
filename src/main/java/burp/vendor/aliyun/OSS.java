@@ -10,16 +10,17 @@ import burp.api.montoya.http.message.requests.HttpRequest;
 import burp.api.montoya.scanner.audit.issues.AuditIssue;
 import burp.api.montoya.scanner.audit.issues.AuditIssueConfidence;
 import burp.api.montoya.scanner.audit.issues.AuditIssueSeverity;
+import burp.ui.ListsModule;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OSS implements Base {
 
-    List<AuditIssue> auditIssueList = new ArrayList<>();
+    List<ListsModule> listsModule = new ArrayList<>();
     private final HttpRequest httpRequest;
     @Override
-    public List<AuditIssue> checkVul() {
+    public List<ListsModule> checkVul() {
         IAction[] iActions = {
                 this::bucketsTraversable,
                 this::checkUploadFile,
@@ -29,7 +30,7 @@ public class OSS implements Base {
         for (IAction iAction : iActions) {
             iAction.execute();
         }
-        return auditIssueList;
+        return listsModule;
     }
 
 
@@ -39,9 +40,7 @@ public class OSS implements Base {
         if (get.response().statusCode() <= successCodeRange){
             ByteArray body = get.response().body();
             if (body.countMatches("<ListBucketResult>") != 0 && body.countMatches("<Name>") != 0){
-                auditIssueList.add(AuditIssue.auditIssue("Buckets are traversable","Buckets are traversable","",
-                        get.url(), AuditIssueSeverity.HIGH,
-                        AuditIssueConfidence.FIRM,"","",AuditIssueSeverity.HIGH,get));
+                listsModule.add(new ListsModule(get,"存储桶可遍历","阿里云OSS"));
             }
         }
     }
@@ -51,10 +50,7 @@ public class OSS implements Base {
         String service = getService(httpRequest) + "/" + fileName;
         HttpRequestResponse httpRequestResponse = Base.sendRequest(service, "PUT", "test fileUpload", new ArrayList<>());
         if (httpRequestResponse.response().statusCode() <= successCodeRange){
-            AuditIssue auditIssue = AuditIssue.auditIssue("Support put to upload files","Support put to upload files","",
-                    httpRequestResponse.url(), AuditIssueSeverity.HIGH,
-                    AuditIssueConfidence.FIRM,"","",AuditIssueSeverity.HIGH,httpRequestResponse);
-            auditIssueList.add(auditIssue);
+            listsModule.add(new ListsModule(httpRequestResponse,"put文件上传","阿里云OSS"));
         }
     }
 
@@ -69,17 +65,14 @@ public class OSS implements Base {
         HttpRequestResponse get = Base.sendRequest(currentUrl +  "?acl", "GET", null, new ArrayList<>());
         short i = get.response().statusCode();
         if (get.response().statusCode() <= successCodeRange){
-            auditIssueList.add(AuditIssue.auditIssue("ACL readable","ACL readable","",get.url(), AuditIssueSeverity.HIGH,
-                    AuditIssueConfidence.FIRM,"","",AuditIssueSeverity.HIGH,get));
+            listsModule.add(new ListsModule(get,"ACL可读","阿里OSS"));
         }
         if (Constant.putAcl){
             ArrayList<HttpHeader> headers = new ArrayList<>();
             headers.add(HttpHeader.httpHeader("x-oss-object-acl",currentBucketAcl));
             HttpRequestResponse put = Base.sendRequest(currentUrl + "?acl", "PUT", null, headers);
-            short i1 = put.response().statusCode();
             if (put.response().statusCode() <= successCodeRange) {
-                auditIssueList.add(AuditIssue.auditIssue("ACL is writable","ACL is writable","",put.url(), AuditIssueSeverity.HIGH,
-                        AuditIssueConfidence.FIRM,"","",AuditIssueSeverity.HIGH,put));
+                listsModule.add(new ListsModule(put,"ACL可写","阿里云OSS"));
             }
         }
     }
@@ -106,8 +99,7 @@ public class OSS implements Base {
                     " }";
             HttpRequestResponse put = Base.sendRequest(service + "/?policy", "PUT", body, objects);
             if (put.response().statusCode() <= successCodeRange){
-                auditIssueList.add(AuditIssue.auditIssue("policy is writable","policy  is writable","",put.url(), AuditIssueSeverity.HIGH,
-                        AuditIssueConfidence.FIRM,"","",AuditIssueSeverity.HIGH,put));
+                listsModule.add(new ListsModule(put,"policy可写","阿里云OSS"));
             }
         }
     }
