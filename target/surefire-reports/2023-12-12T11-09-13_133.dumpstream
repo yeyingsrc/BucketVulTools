@@ -1,5 +1,0 @@
-# Created at 2023-12-12T11:09:13.291
-Boot Manifest-JAR contains absolute paths in classpath 'D:\burpSuite插件开发\CloudExt\BucketVulTools\target\test-classes'
-Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
-'other' has different root
-

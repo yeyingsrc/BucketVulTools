@@ -9,7 +9,7 @@ burp\task\IScanCheck.class
 burp\ui\UI$1.class
 burp\http\RequestHandler.class
 burp\ui\UI$2.class
-burp\vendor\CheckAKSK.class
+burp\Main$1.class
 burp\vendor\tencent\COS.class
 burp\vendor\Type.class
 burp\common\IAction.class

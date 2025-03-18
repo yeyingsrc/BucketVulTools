@@ -25,7 +25,7 @@ public interface Base {
 
 
     static HttpRequestResponse sendRequest(String url, String method, String body, List<HttpHeader> header){
-
+        Main.api.logging().logToOutput("Sending request to URL : " + url);
         HttpRequest httpRequest = HttpRequest.httpRequestFromUrl(url).withMethod(method);
         if (!header.isEmpty()){
             for (HttpHeader httpHeader : header) {

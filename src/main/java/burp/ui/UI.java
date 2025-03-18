@@ -165,7 +165,11 @@ public class UI {
      */
     public static void updateUIData(List<ListsModule> list) {
         //更新UI颜色
-        Main.pane.setBackgroundAt(Main.tabIndex,Color.RED);
+        if (!list.isEmpty()) {
+            Main.pane.setBackgroundAt(Main.tabIndex,Color.RED);
+            Main.api.logging().logToOutput("目标：" + list.get(0).getURL() + " 存在漏洞" +  list.get(0).getVulType());
+        }
+
         for (ListsModule listsModule : list) {
             setModeData(listsModule);
         }
