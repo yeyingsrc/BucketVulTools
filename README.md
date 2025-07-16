@@ -1,3 +1,8 @@
+# 写在前面
+本项目停止更新，由于BurpSuite插件更新需要考虑版本兼容性（比较麻烦），因此改造为浏览器插件方便使用。
+新版本参考：https://github.com/libaibaia/BucketTool（增加AWS S3厂商，以及阿里云和AWS的桶接管检测）
+<img width="736" height="328" alt="image" src="https://github.com/user-attachments/assets/40513885-b08b-4980-b447-0f26e4683952" />
+
 # BucketVulTools
 Burpsuite存储桶配置不当漏洞检测插件
 ## 用法
